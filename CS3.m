@@ -12,7 +12,7 @@
 % Energy 2022, 239, 122622, ISSN 0360-5442
 % doi.org/10.1016/j.energy.2021.122622.
 %
-% Saari J, Suikkanen H, Martinez CM, Hyv‰rinen J.
+% Saari J, Suikkanen H, Martinez CM, Hyv√§rinen J.
 % Optimization of natural circulation district heating reactor 
 % primary heat exchangers
 % Energies 2023.
@@ -57,7 +57,7 @@ else
     I_NFEmax            = floor(I_itermax*I_NP*2);
 end
 if (isfield(S_struct,'F_pa1'))              % probability to "abandon nest" 
-    F_pa1           = S_struct.F_pa1;       % i.e., to apply LÈvy flights
+    F_pa1           = S_struct.F_pa1;       % i.e., to apply L√©vy flights
 else                                        % in FIRST generation
     F_pa1           = 0.2;                  % default 20%
 end
@@ -139,7 +139,7 @@ while (done==0)
     I_iter = I_iter+1; % iteration counter incremented
     
     % First, do the main bit here: first differential mutation to all of
-    % the population, then LÈvy flights for worst F_pa 
+    % the population, then L√©vy flights for worst F_pa 
     
     % 1) Generate new trial solutions by differential mutation...
     FM_new_nestpop=diff_mutation(FVr_bestnest,FM_nestpop,FVr_minbound,FVr_maxbound,F_CR,S_struct); 
@@ -147,13 +147,13 @@ while (done==0)
     [~,~,FM_nestpop,fitness,S_bestval,NFEincr] = get_best_nest(FM_nestpop,FM_new_nestpop,fitness,ofun,S_struct,S_bestval); 
     I_NFE=I_NFE+NFEincr;                               % Update the counter again        
 
-    % 2) Then the LÈvy flights:
-    % 2.1 update fraction of "abandoned nests" (LÈvy flights performed):
+    % 2) Then the L√©vy flights:
+    % 2.1 update fraction of "abandoned nests" (L√©vy flights performed):
     S_struct.F_pa = ( ((I_NFEmax-I_NFE)/I_NFEmax)*F_pa1) + ((I_NFE/I_NFEmax)*F_paMax);   
-    % 2.2 Generate new trial solutions by LÈvy flights:
+    % 2.2 Generate new trial solutions by L√©vy flights:
     FM_new_nestpop=get_cuckoos(FM_nestpop,FVr_minbound,FVr_maxbound,S_struct);   
     % ...and evaluate the generated set of candidate solutions:
-    fprintf(1,'\nSuccess rate in LÈvy flights (NP %d; pa %4.2f) -- ', I_NP, S_struct.F_pa);      
+    fprintf(1,'\nSuccess rate in L√©vy flights (NP %d; pa %4.2f) -- ', I_NP, S_struct.F_pa);      
     [fnew,FVr_bestmem,FM_nestpop,fitness,S_bestval,NFEincr] = get_best_nest(FM_nestpop,FM_new_nestpop,fitness,ofun,S_struct,S_bestval);     
    	I_NFE=I_NFE+NFEincr;                               % Update the counter   
 
@@ -248,7 +248,7 @@ disp(strcat('\nBest found obj.f.value = ',num2str(fmin)));
 end
 
 
-% Generate new cuckoos via LÈvy-distribute ramdom walk (LÈvy flight)
+% Generate new cuckoos via L√©vy-distribute ramdom walk (L√©vy flight)
 function FM_nestpop=get_cuckoos(FM_nestpop,FVr_minbound,FVr_maxbound,S_struct)
 % perform Levy flights
 
@@ -274,7 +274,7 @@ for j=1:I_Nfound
     I_rndindex = ceil((I_NP-1)*rand(1));
     FVr_r1 = FM_nestpop(I_rndindex,:);
   
-    % F_alpha is recommended 0.01 with classic CS. In the CS3 the LÈvy
+    % F_alpha is recommended 0.01 with classic CS. In the CS3 the L√©vy
     % flights are intended to emphasize global exploration, and several
     % times larger values tend to work better. Not the the vector
     % difference is also to a random vector, not the population best.
@@ -327,7 +327,7 @@ FVr_bestmem=FM_nestpop(szdim(1),:);
 end
 
 % perform differential mutation - main search method in CS3.
-function FM_new_nestpop=diff_mutation(~,FM_nestpop,FVr_minbound,FVr_maxbound,F_CR,S_struct) 
+function FM_new_nestpop=diff_mutation(FVr_bestnest,FM_nestpop,FVr_minbound,FVr_maxbound,F_CR,S_struct) 
 % differential mutation almost as original (Storn); minor tweaks such as...
 % ... randomize mutation weight factor individually for each each. 
 % minimum and maximum bounds can be tweaked for problem at hand.  
@@ -367,7 +367,7 @@ end
 
 % Application of simple constraints
 % mirror all violations back into the box
-% note that with very long LÈvy flights or very large F, sometimes
+% note that with very long L√©vy flights or very large F, sometimes
 % mirroring can throw value off the other end. If obj.function cannot
 % handle this, it should be checked against and prevented; here very low
 % probability of "wasting" a function evaluation is permitted under the
